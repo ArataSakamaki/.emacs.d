@@ -27,6 +27,7 @@
 (package-install 'dracula-theme)
 (package-install 'ivy-rich)
 (package-install 'lsp-html)
+(package-install 'solarized-theme)
 
 (global-hl-line-mode t)
 (show-paren-mode t)
@@ -36,7 +37,8 @@
 (which-function-mode 1)
 (setq-default tab-width 4 indent-tabs-mode nil)
 
-(load-theme 'dracula t)
+;;(load-theme 'dracula t)
+(load-theme 'solarized-light t)
 
 (exec-path-from-shell-initialize)
 
