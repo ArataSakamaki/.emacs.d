@@ -4,6 +4,9 @@
 
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
+(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/") t)
+
+
 (package-initialize)
 
 (setq make-backup-files nil)
@@ -26,7 +29,7 @@
 (package-install 'yasnippet-snippets)
 (package-install 'dracula-theme)
 (package-install 'ivy-rich)
-(package-install 'lsp-html)
+;;(package-install 'lsp-html)
 (package-install 'solarized-theme)
 
 (global-hl-line-mode t)
