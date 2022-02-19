@@ -49,6 +49,16 @@
   (define-key vertico-map (kbd "C-s") 'vertico-next)
   )
 
+;; Configure directory extension.
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
 (use-package orderless
   :init
   (setq completion-styles '(orderless)
@@ -65,7 +75,7 @@
          ("C-x b" . consult-buffer))
   :config
   (consult-customize
-   consult-line :prompt "Search->  "))
+   consult-line :prompt "Search ->  "))
 
 (use-package emacs
   :init
