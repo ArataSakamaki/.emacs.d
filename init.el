@@ -1,38 +1,30 @@
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-
 (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/") t)
-
 
 (package-initialize)
 
+(package-install 'exec-path-from-shell)
+(package-install 'solarized-theme)
+(package-install 'yaml-mode)
+(package-install 'cmake-mode)
+(package-install 'use-package)
+(package-install 'vertico)
+(package-install 'orderless)
+(package-install 'consult)
+
+;; disable crate backup file
 (setq make-backup-files nil)
 (setq auto-save-default nil)
-
-(add-to-list 'default-frame-alist '(font . "Source Code Pro-11" ))
+;; disbable bell
+(setq ring-bell-function 'ignore)
+;; highlight pair
 (electric-pair-mode 1)
-
-(package-install 'exec-path-from-shell)
-(package-install 'flycheck)
-(package-install 'lsp-mode)
-(package-install 'lsp-ui)
-(package-install 'company-lsp)
-(package-install 'company)
-;;(package-install 'python-mode)
-(package-install 'swiper)
-(package-install 'counsel)
-(package-install 'ivy)
-(package-install 'yasnippet)
-(package-install 'yasnippet-snippets)
-(package-install 'dracula-theme)
-(package-install 'ivy-rich)
-;;(package-install 'lsp-html)
-(package-install 'solarized-theme)
-
+;; highlight line
 (global-hl-line-mode t)
+
 (show-paren-mode t)
 (setq show-paren-style 'mixed)
 (transient-mark-mode t)
@@ -40,73 +32,69 @@
 (which-function-mode 1)
 (setq-default tab-width 4 indent-tabs-mode nil)
 
+;; change font
+(add-to-list 'default-frame-alist '(font . "Source Code Pro-11" ))
 ;;(load-theme 'dracula t)
-(load-theme 'solarized-light t)
+;;(load-theme 'solarized-light t)
 
 (exec-path-from-shell-initialize)
 
+;; Enable vertico
+(use-package vertico
+  :init
+  (vertico-mode)
 
-;;(require 'flycheck)
-;;(global-flycheck-mode)
+  (setq vertico-count 15)
+  (define-key vertico-map (kbd "C-r") 'vertico-previous)
+  (define-key vertico-map (kbd "C-s") 'vertico-next)
+  )
 
-;;(require 'company)
-;;(global-company-mode)
-;;(setq company-idle-delay 0)
-;;(setq company-minimum-prefix-length 2)
-;;(setq company-selection-wrap-around t)
-;;(define-key company-active-map (kbd "M-n") nil)
-;;(define-key company-active-map (kbd "M-p") nil)
-;;(define-key company-active-map (kbd "C-n") 'company-select-next)
-;;(define-key company-active-map (kbd "C-p") 'company-select-previous)
-;;(define-key company-active-map (kbd "C-h") nil)
-;;(define-key company-active-map (kbd "C-i") 'company-complete-selection)
-;;(define-key company-active-map [tab] 'company-complete-selection)
+;; Configure directory extension.
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
-;;(defvar company-mode/enable-yas t
-;;  "Enable yasnippet for all backends.")
-;;(defun company-mode/backend-with-yas (backend)
-;;  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-;;	  backend
-;;	(append (if (consp backend) backend (list backend))
-;;			'(:with company-yasnippet))))
-;;(defun set-yas-as-company-backend ()
-;;  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
-;;(add-hook 'company-mode-hook 'set-yas-as-company-backend)
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 
+(use-package savehist
+  :init
+  (savehist-mode))
 
+(use-package consult
+  :bind (("C-s" . consult-line)
+         ("C-r" . consult-line)
+         ("C-x b" . consult-buffer))
+  :config
+  (consult-customize
+   consult-line :prompt "Search ->  "))
 
-;;(require 'lsp-mode)
-;;(add-hook 'prog-mode-hook #'lsp)
-;;(require 'lsp-ui)
-;;(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+(use-package emacs
+  :init
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-;;(require 'company-lsp)
-;;(push 'company-lsp company-backends)
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-(require 'ivy)
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-(setq ivy-extra-directories nil)
-(setq ivy-re-builders-alist
-      '((t . ivy--regex-plus)))
-
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../")))
-
-(global-set-key "\C-s" 'swiper)
-(defvar swiper-include-line-number-in-search t)
-
-
+  (setq enable-recursive-minibuffers t))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (yasnippet ivy swiper company lsp-mode yasnippet-snippets lsp-ui lsp-html ivy-rich flycheck exec-path-from-shell dracula-theme counsel company-lsp auto-highlight-symbol))))
+   '(yaml-mode vertico use-package solarized-theme orderless exec-path-from-shell consult cmake-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
