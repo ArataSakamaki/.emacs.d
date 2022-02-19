@@ -77,9 +77,17 @@
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-    (setq enable-recursive-minibuffers t))
+  (setq enable-recursive-minibuffers t))
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(consult orderless use-package yasnippet-snippets yaml-mode vertico solarized-theme markdown-preview-mode lsp-ui ivy-rich flycheck exec-path-from-shell dracula-theme counsel company cmake-mode)))
+   '(yaml-mode vertico use-package solarized-theme orderless exec-path-from-shell consult cmake-mode)))
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
