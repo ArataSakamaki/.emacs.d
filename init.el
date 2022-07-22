@@ -14,6 +14,7 @@
 (package-install 'vertico)
 (package-install 'orderless)
 (package-install 'consult)
+(package-install 'magit)
 
 ;; disable crate backup file
 (setq make-backup-files nil)
@@ -47,6 +48,7 @@
   (setq vertico-count 15)
   (define-key vertico-map (kbd "C-r") 'vertico-previous)
   (define-key vertico-map (kbd "C-s") 'vertico-next)
+  (setq vertico-cycle t)
   )
 
 ;; Configure directory extension.
