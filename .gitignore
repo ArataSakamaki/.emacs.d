@@ -5,3 +5,4 @@
 history
 session*
 transient/
+.cache/

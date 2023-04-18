@@ -15,6 +15,16 @@
 (package-install 'orderless)
 (package-install 'consult)
 (package-install 'magit)
+(package-install 'company)
+(package-install 'lsp-mode)
+(package-install 'lsp-ui)
+(package-install 'flycheck)
+(package-install 'yasnippet)
+
+;; dependencies for copilot.el
+(package-install 'dash)
+(package-install 's)
+(package-install 'editorconfig)
 
 ;; disable crate backup file
 (setq make-backup-files nil)
@@ -40,7 +50,6 @@
 
 (exec-path-from-shell-initialize)
 
-;; Enable vertico
 (use-package vertico
   :init
   (vertico-mode)
@@ -51,7 +60,6 @@
   (setq vertico-cycle t)
   )
 
-;; Configure directory extension.
 (use-package vertico-directory
   :after vertico
   :ensure nil
@@ -67,10 +75,6 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
-(use-package savehist
-  :init
-  (savehist-mode))
-
 (use-package consult
   :bind (("C-s" . consult-line)
          ("C-r" . consult-line)
@@ -78,6 +82,77 @@
   :config
   (consult-customize
    consult-line :prompt "Search ->  "))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;;(global-set-key (kbd "TAB") 'company-indent-or-complete-common)
+;;(define-key comapny-active-map (kbd "TAB") 'company-indent-or-complete-common)
+(use-package company
+  :after lsp-mode
+  :ensure t
+  :config
+  (global-company-mode)
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 2)
+  (setq company-selection-wrap-around t)
+
+  ;; (setq company-selection-default nil)
+  ;; (setq company-selection nil)
+  :bind (:map company-active-map
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("C-s" . company-filter-candidates)
+              ;;("TAB" . company-complete-selection)
+              ("TAB" . company-indent-or-complete-common))
+
+  :bind (:map company-search-map
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous))
+  :bind (:map lsp-mode-map
+              ;; ("TAB" . company-indent-or-complete-common)
+              ))
+
+(use-package lsp-mode
+  :hook (prog-mode . lsp-mode)
+  :custom
+  (lsp-signature-auto-activate nil)
+  (lsp-diagnostics-provider :flycheck)
+  )
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+    ;; lsp-ui-doc
+    (lsp-ui-doc-enable t)
+    (lsp-ui-doc-header t)
+    (lsp-ui-doc-include-signature t)
+    (lsp-ui-doc-position 'top)
+    (lsp-ui-doc-use-childframe t)
+    (lsp-ui-doc-use-webkit t)
+    (lsp-ui-flycheck-enable t)
+    (lsp-ui-sideline-enable t)
+    (lsp-ui-sideline-ignore-duplicate t)
+    (lsp-ui-sideline-show-symbol t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-sideline-show-diagnostics t)
+    (lsp-ui-sideline-show-code-actions t)
+  )
+
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp))))  ; or lsp-deferred
+
+;; (use-package copilot
+;;   :load-path "copilot.el"
+;;   :hook (prog-mode . copilot-mode)
+;;   :bind (:map copilot-completion-map
+;;               ("<tap>" . copilot-accept-completion)
+;;               ("TAB" . copilot-accept-completion))
+;;   )
 
 (use-package emacs
   :init
@@ -96,7 +171,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(yaml-mode vertico use-package solarized-theme orderless exec-path-from-shell consult cmake-mode)))
+   '(web-mode yaml-mode vertico use-package solarized-theme orderless exec-path-from-shell consult cmake-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
